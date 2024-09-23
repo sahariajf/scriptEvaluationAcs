@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marks Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input { margin: 5px; padding: 5px; width: 50px; }
+    button { padding: 10px 20px; margin-top: 20px; }
+    
+    .container {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .row {
+      width: 45%;
+    }
+
+    .output { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <h2>Enter Marks for 40 Questions</h2>
+
+  <!-- Container to hold the two rows side by side -->
+  <div class="container">
+    
+    <!-- Row 1: Questions 1 to 20 -->
+    <div class="row">
+      <h3>Questions 1 to 20</h3>
+      <form id="marksForm1">
+        <div id="questions1"></div>
+      </form>
+    </div>
+
+    <!-- Row 2: Questions 21 to 40 -->
+    <div class="row">
+      <h3>Questions 21 to 40</h3>
+      <form id="marksForm2">
+        <div id="questions2"></div>
+      </form>
+    </div>
+
+  </div>
+
+  <button type="button" onclick="calculateMarks()">Calculate</button>
+
+  <div class="output" id="output"></div>
+
+  <script>
+    // Generate 20 input fields for the first row (Questions 1 to 20)
+    const form1 = document.getElementById('questions1');
+    for (let i = 1; i <= 20; i++) {
+      form1.innerHTML += `Q${i}: <input type="number" id="q${i}" min="0" max="100" placeholder="Marks" onkeydown="moveNext(event, ${i})"><br>`;
+    }
+
+    // Generate 20 input fields for the second row (Questions 21 to 40)
+    const form2 = document.getElementById('questions2');
+    for (let i = 21; i <= 40; i++) {
+      form2.innerHTML += `Q${i}: <input type="number" id="q${i}" min="0" max="100" placeholder="Marks" onkeydown="moveNext(event, ${i})"><br>`;
+    }
+
+    // Function to handle Enter key navigation
+    function moveNext(event, currentId) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission
+        const nextId = currentId + 1;
+        const nextInput = document.getElementById(`q${nextId}`);
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }
+    }
+
+    // Function to calculate total marks and count blanks
+    function calculateMarks() {
+      let totalMarks = 0;
+      let blankCount = 0;
+      let questionList = "<h3>Question List</h3><ul>";
+
+      // Iterate through each question input from 1 to 40
+      for (let i = 1; i <= 40; i++) {
+        const mark = document.getElementById(`q${i}`).value;
+
+        if (mark === "") {
+          blankCount++;
+          questionList += `<li>Q${i}: Blank</li>`;
+        } else {
+          totalMarks += parseFloat(mark);
+          questionList += `<li>Q${i}: ${mark} marks</li>`;
+        }
+      }
+
+      // Close the list
+      questionList += "</ul>";
+
+      // Final output combining the question list with total and blank questions
+      let output = questionList;
+      output += `<p><strong>Total Marks:</strong> ${totalMarks}</p>`;
+      output += `<p><strong>Total Answered Questions:</strong> ${40 - blankCount}</p>`;
+
+      document.getElementById('output').innerHTML = output;
+    }
+  </script>
+
+</body>
+</html>
